@@ -19,7 +19,7 @@ def main(no_show_game):
   """
   # Configuration parameters for the genetic algorithm
   GAME_SPEED = 600      # Speed of game execution (milliseconds)
-  NUM_GEN = 10         # Number of generations to evolve
+  NUM_GEN = 100         # Number of generations to evolve
   NUM_POP = 15          # Size of population in each generation
   NUM_EXP = 10          # Number of experiments to run
   # Generation gap (fraction of population to be replaced)
@@ -112,6 +112,7 @@ if __name__ == "__main__":
 
   else:
     # Run game with pre-trained optimal weights
-    optimal_weights = [-0.97, 5.47, -13.74, -0.73, 7.99, -0.86, -0.72]
+    optimal_weights = [-0.97, 5.47, -13.74, -0.73,
+                       7.99, -0.86, -0.72]  # after 100 generations
     chromo = ga.Chromosome(optimal_weights)
     ai.run_game(chromo, speed=100, max_score=200000, no_show=False)
