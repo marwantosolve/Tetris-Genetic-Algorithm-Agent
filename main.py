@@ -1,6 +1,6 @@
-import tetris_ai.tetris_genetic_algorithm as ga
+import tetris_ai.tetris_ga as ga
 import tetris_ai.tetris_base as game
-import tetris_ai.optimized_ai_player as ai
+import tetris_ai.tetris_ga_evaluator as ai
 import argparse
 import copy
 
