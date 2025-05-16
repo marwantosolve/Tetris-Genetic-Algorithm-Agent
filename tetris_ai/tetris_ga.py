@@ -81,7 +81,22 @@ class GA:
 
     return ''
 
-  # Select the best chromosomes from the population (ABDO)
+  # Select the best chromosomes from the population
+  def selection(self, chromosomes, num_selection, type="roulette"):
+    """Define the selection method to use
+
+    Args:
+        chromosomes: Chromosomes to select
+        type       : Selection type. (Defalt: roulette)
+
+    """
+
+    if (type == "roulette"):
+      selected_chromos = self._roulette(chromosomes, num_selection)
+    else:
+      raise ValueError(f"Selection type {type} not defined")
+
+    return selected_chromos
 
   # Selection method using roulette wheel
   def _roulette(self, chromosomes, num_selection):
@@ -103,12 +118,75 @@ class GA:
 
     return pop_selected
 
-  # Create a new population of chromosomes using crossover and mutation (ABDO)
+  # Create a new population of chromosomes using crossover and mutation
+  def operator(self, chromosomes, crossover="arithmetic", mutation="uniform",
+               crossover_rate=0.5, mutation_rate=0.1):
+    """Define the genetic operators"""
 
-  # Crossover method using arithmetic crossover (ABDO)
+    new_chromo = self._arithmetic_crossover(chromosomes, mutation,
+                                            crossover_rate, mutation_rate)
 
-  # Mutation method using uniform mutation (REDA)
+    self.mutation(new_chromo, mutation, mutation_rate)
 
-  # Mutation method using random mutation (REDA)
+    return new_chromo
 
-  # Replace chromosomes from population with the new ones (REDA)
+  # Crossover method using arithmetic crossover
+  def _arithmetic_crossover(self, selected_pop, mutation, cross_rate=0.4,
+                            mutation_rate=0.1):
+    """Create a new chromosome using arithmetic crossover"""
+
+    N_genes = len(selected_pop[0].weights)
+    new_chromo = [copy.deepcopy(c) for c in selected_pop]
+
+    for i in range(0, len(selected_pop), 2):
+      a = random.random()
+
+      tc_parent_1 = random.randint(0, 100)
+      tc_parent_2 = random.randint(0, 100)
+      if (tc_parent_1 < cross_rate*100 and tc_parent_2 < cross_rate*100):
+        try:
+          for j in range(0, N_genes):
+            new_chromo[i].weights[j] = a*new_chromo[i].weights[j] \
+                + (1 - a)*new_chromo[i+1].weights[j]
+
+            new_chromo[i+1].weights[j] = a*new_chromo[i+1].weights[j] \
+                + (1 - a)*new_chromo[i].weights[j]
+
+        except IndexError:
+          pass
+
+    return new_chromo
+
+  # Mutation method using uniform mutation
+  def mutation(self, chromosome, type, mutation_rate):
+    """Select mutation type
+
+    Args:
+        chromosome : Chromosome to apply mutation
+        type       : Select the mutation type
+
+    """
+
+    if (type == "random"):
+      self._rand_mutation(chromosome, mutation_rate)
+    else:
+      raise ValueError(f"Type {type} not defined")
+
+  # Mutation method using random mutation
+  def _rand_mutation(self, chromosome, mutation_rate):
+    """Apply mutation to a specific chromosome using random mutation"""
+
+    for chromo in chromosome:
+      for i, point in enumerate(chromo.weights):
+        if random.random() < mutation_rate:
+          chromo.weights[i] = random.uniform(-1.0, 1.0)
+
+  # Replace chromosomes from population with the new ones
+  def replace(self, new_chromo):
+    """Replace chromosomes from population with the new ones"""
+
+    new_pop = sorted(self.chromosomes, key=lambda x: x.score, reverse=True)
+    new_pop[-(len(new_chromo)):] = new_chromo
+    random.shuffle(new_pop)
+
+    self.chromosomes = new_pop
