@@ -9,7 +9,7 @@ from pygame.locals import *
 ##############################################################################
 
 # Board config
-FPS = 25
+FPS = 600
 WINDOWWIDTH = 650
 WINDOWHEIGHT = 690
 BOXSIZE = 25
@@ -772,6 +772,5 @@ def calc_sides_in_contact(board, piece):
           # (nao pode haver pecas em cima)
 
   return piece_sides, floor_sides, wall_sides
-
 
 # main() # Uncomment this line to run the game with setting MANUAL_GAME = True
